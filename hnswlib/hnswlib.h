@@ -53,6 +53,11 @@ namespace hnswlib {
         out.write((char *) &podRef, sizeof(T));
     }
 
+    static void writeBinaryPOD(std::ostream &out, const int &podRef) {
+        std::string s = std::to_string(podRef);
+        out << s << std::endl;
+    }
+
     template<typename T>
     static void readBinaryPOD(std::istream &in, T &podRef) {
         in.read((char *) &podRef, sizeof(T));

@@ -622,6 +622,66 @@ namespace hnswlib {
             output.close();
         }
 
+
+        void saveIndexAsText(const std::string &location) {
+            std::ofstream output(location, std::ios::binary);
+            std::streampos position;
+
+            output << offsetLevel0_ << std::endl;
+            output << max_elements_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+            output << offsetLevel0_ << std::endl;
+
+            output << max_elements_ << std::endl;
+            output << cur_element_count << std::endl;
+            output << size_data_per_element_ << std::endl;
+            output << label_offset_ << std::endl;
+            output << offsetData_ << std::endl;
+            output << maxlevel_ << std::endl;
+            output << enterpoint_node_ << std::endl;
+            output << maxM_ << std::endl;
+
+            output << maxM0_ << std::endl;
+            output << M_ << std::endl;
+            output << mult_ << std::endl;
+            output << ef_construction_ << std::endl;
+
+            //output.write(data_level0_memory_, cur_element_count * size_data_per_element_);
+            /* TODO:
+            for (size_t i = 0; i < cur_element_count; i++) {
+                label_lookup_[getExternalLabel(i)]=i;
+                unsigned int linkListSize;
+                readBinaryPOD(input, linkListSize);
+                if (linkListSize == 0) {
+                    element_levels_[i] = 0;
+
+                    linkLists_[i] = nullptr;
+                } else {
+                    element_levels_[i] = linkListSize / size_links_per_element_;
+                    linkLists_[i] = (char *) malloc(linkListSize);
+                    if (linkLists_[i] == nullptr)
+                        throw std::runtime_error("Not enough memory: loadIndex failed to allocate linklist");
+                    input.read(linkLists_[i], linkListSize);
+                }
+            } */
+
+            for (size_t i = 0; i < cur_element_count; i++) {
+                unsigned int linkListSize = element_levels_[i] > 0 ? size_links_per_element_ * element_levels_[i] : 0;
+                writeBinaryPOD(output, linkListSize);
+                if (linkListSize) {
+                    // output.write(linkLists_[i], linkListSize);
+                    output << linkLists_[i] << " ";
+                }
+                output << std::endl;
+                    
+            }
+            output.close();
+        }
+
         void loadIndex(const std::string &location, SpaceInterface<dist_t> *s, size_t max_elements_i=0) {
 
 

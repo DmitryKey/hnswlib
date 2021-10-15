@@ -157,6 +157,10 @@ public:
         appr_alg->saveIndex(path_to_index);
     }
 
+    void saveIndexAsText(const std::string &path_to_index) {
+        appr_alg->saveIndexAsText(path_to_index);
+    }
+
     void loadIndex(const std::string &path_to_index, size_t max_elements) {
       if (appr_alg) {
           std::cerr<<"Warning: Calling load_index for an already inited index. Old index is being deallocated.";
@@ -291,7 +295,6 @@ public:
     py::list getFirstLayer(int layer) {
         return appr_alg->get_linklist_at_level(appr_alg->entry, layer);
     }
-
 
     py::dict getAnnData() const { /* WARNING: Index::getAnnData is not thread-safe with Index::addItems */
 
@@ -671,9 +674,11 @@ PYBIND11_PLUGIN(hnswlib) {
         .def("add_items", &Index<float>::addItems, py::arg("data"), py::arg("ids") = py::none(), py::arg("num_threads")=-1)
         .def("get_items", &Index<float, float>::getDataReturnList, py::arg("ids") = py::none())
         .def("get_ids_list", &Index<float>::getIdsList)
+        //.def("get_first_layer", &Index<float>::getFirstLayer, py::arg("layer")=0)
         .def("set_ef", &Index<float>::set_ef, py::arg("ef"))
         .def("set_num_threads", &Index<float>::set_num_threads, py::arg("num_threads"))
         .def("save_index", &Index<float>::saveIndex, py::arg("path_to_index"))
+        .def("save_index_as_text", &Index<float>::saveIndexAsText, py::arg("path_to_index"))
         .def("load_index", &Index<float>::loadIndex, py::arg("path_to_index"), py::arg("max_elements")=0)
         .def("mark_deleted", &Index<float>::markDeleted, py::arg("label"))
         .def("resize_index", &Index<float>::resizeIndex, py::arg("new_size"))
